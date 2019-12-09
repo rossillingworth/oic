@@ -1,0 +1,54 @@
+name,cmd,description,pattern
+,,,
+,,, NB: Docker cli cmds are run in Linux/Container, so can use proper/Linux cmd parsing
+,,,
+DebugArgs,echo -e 'DIR <<DIR>> \n DIRNAME <<DIRNAME>> \n FILE_RELATIVE <<FILE_RELATIVE>> \n FILENAME <<FILENAME>> \n CWD <<CWD>> \n ############ \n',Debug OIC,/.*
+DebugInContainer,docker run -it --rm -e COLUMNS='$(tput cols)' -e LINES='$(tput lines)' -w /root busybox sh -c 'echo -e \n DIR <<DIR>> \n DIRNAME <<DIRNAME>> \n FILE_RELATIVE_PATH <<FILE_RELATIVE_PATH>> \n FILENAME <<FILENAME>> \n CWD <<CWD>> \n ############ \n\n\n ',Debug OIC,/.*
+DebugPrint,docker run -it --rm -w /root busybox sh -c 'echo I love roos',Debug OIC,/.*
+,,,
+GoLangMyTest,docker run -it --rm -v /home/rillingworth/go/src:/usr/src -w /usr/src/rossillingworth/rubber-duck golang:1.13.4-buster /bin/bash -c 'for GOOS in darwin linux windows; do for GOARCH in 386 amd64; do export GOOS GOARCH; go build -v -o rubber-duck-$GOOS-$GOARCH; done; done;',Compile with GO,/.*
+GoLangBuild,docker run -it --rm -v <<DIR>>:/usr/src/<<DIRNAME>> -w /usr/src/<<DIRNAME>> golang:1.13.4-buster /bin/bash -c '$(for GOOS in darwin linux windows; do; for GOARCH in 386 amd64; do;export GOOS GOARCH;go build -v -o oic-$GOOS-$GOARCH;done;done)',Compile with GO,/.*
+GoLangStartBash,docker run -it --rm -v <<DIR>>:/usr/src/<<DIRNAME>> -w /usr/src/<<DIRNAME>> golang:1.13.4-buster /bin/bash,Compile with GO,/.*
+,,,
+Runfile,docker run -it --rm -v <<DIR>>:/root/wkdir -w /root/wkdir rossillingworth/aws-k8s-toolbox:latest /bin/bash -c 'chmod+x <<FILE_RELATIVE>>;./<<FILE_RELATIVE>>;',File Test,/.*
+,,,
+,,,
+,,,
+,,,
+,,,
+Scriptable,docker run -it --rm -w /root busybox /bin/bash -c 'echo ARGS: <<ARGS>>',Debug OIC,/.*
+MultiScriptable,docker run -v <<DIR>>:/go/src/app --rm --name helloworld golang:1.8 /bin/bash -c 'cd src/app;go get https:yourpackage;go run src/app/hello_world.go',Long docker CMD example,/.*
+,,,Scriptable3 WILL ONLY WORK ON WIN-7 WHEN THE FOLDER IS inside C:\Users
+Scriptable3,docker run -it --rm -v <<REL:test1>>:/root/test1 -w /root busybox sh -c 'chmod +x test1/mytestscript.sh;test1/mytestscript.sh myarg1 <<ARGS>>',Scriptable generic containers,/.*
+,,,xxxxxxxxxxxxxxxxxxx test this on windows-10 machine
+,,,
+,,,Use official DockerHub images
+Toolbox,docker run -it --rm -v <<DIR>>:/root/wkdir -w /root/wkdir rossillingworth/aws-k8s-toolbox:latest /bin/bash,Ross toolbox,/.*
+Apache2.4,docker run -it --name apache24 -p 8080:80 -v <<DIR>>:/usr/local/apache2/htdocs/ httpd:2.4,Apache 2.4 with bells on it?,/.*
+ls,ls -al <<DIR>>,Show whats in the directory,/.*
+,,,
+BusyBox,docker run -it --rm -v <<DIR>>:/root/wkdir -w /root/wkdir busybox,Tiny Linux Tooling system,/.*
+NodeJS,docker run -it --rm --name NodeJS -v <<DIR>>:/usr/src/app -w /usr/src/app node:8 node <<FILE_RELATIVE>>,Run in Node,.js$
+JavaOpenJDK,docker run --rm -v <<DIR>>:/usr/src/myapp -w /usr/src/myapp openjdk:7 javac -sourcepath . *.java,Compile with Java JDK,/.*
+,,,
+test1,docker run -it --rm -v <<DIR>>:/root/wkdir -w /root/wkdir rossillingworth/aws-k8s-toolbox:latest /root/wkdir/<<FILE_RELATIVE>>,File Test,.sh$
+,,,
+,,,
+,,,MUST get paths with spaces working?
+,,,Docker Toolbox Windows uses http://192.168.99.100:$PORT/
+,,,docker-machine ip default
+,,,docker inspect -f '{{ .NetworkSettings.IPAddress }}' <name>
+,,,route /P add 172.0.0.0 MASK 255.0.0.0 10.0.75.2
+,,
+,,
+,,,GOLANG, multi platform targets
+,,,docker run --rm -it -v '$PWD':/usr/src/myapp -w /usr/src/myapp golang:1.8 bash
+,,,$ for GOOS in darwin linux; do
+,,,>   for GOARCH in 386 amd64; do
+,,,>     export GOOS GOARCH
+,,,>     go build -v -o myapp-$GOOS-$GOARCH
+,,,>   done
+,,,> done
+,,
+,,,for GOARCH in 386 amd64; do; echo $GOOS $GOARCH;done
+,,,for GOOS in darwin linux; do; for GOARCH in 386 amd64; do;export GOOS GOARCH;go build -v -o oic-$GOOS-$GOARCH;done;done
